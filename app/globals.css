@@ -1,0 +1,191 @@
+@import "tailwindcss";
+
+@theme {
+  /* Palette « émeraude » : les gris et le noir portent une pointe de vert,
+     ce qui unifie l'ensemble. Changer une valeur ici la répercute partout. */
+  --color-encre: #0a1c17; /* texte principal, sections sombres */
+  --color-papier: #f7faf9; /* fond général */
+  --color-acier: #566b63; /* texte secondaire, icônes neutres */
+  --color-signal: #058c63; /* accent unique : boutons, chiffres clés */
+  --color-signal-fonce: #046b4c; /* survol des boutons */
+  --color-trait: #e3ebe7; /* filets, bordures */
+
+  /* Typographie */
+  --font-display: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-plex-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, monospace;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+body {
+  background: var(--color-papier);
+  color: var(--color-encre);
+  font-family: var(--font-sans);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+
+/* Focus clavier visible partout */
+:focus-visible {
+  outline: 2px solid var(--color-signal);
+  outline-offset: 2px;
+}
+
+/* Quadrillage type papier millimétré — sert l'ancrage "plan technique".
+   Suit la palette et s'efface sur les bords pour ne pas cerner la section. */
+.grille-technique {
+  background-image:
+    linear-gradient(
+      to right,
+      color-mix(in srgb, var(--color-trait) 70%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--color-trait) 70%, transparent) 1px,
+      transparent 1px
+    );
+  background-size: 56px 56px;
+  mask-image: radial-gradient(
+    ellipse 80% 60% at 50% 35%,
+    #000 30%,
+    transparent 75%
+  );
+}
+
+/* Apparition au chargement — courte, discrète, désactivée si reduced motion */
+@media (prefers-reduced-motion: no-preference) {
+  .reveal {
+    animation: rise 0.6s ease-out both;
+  }
+  .reveal-2 {
+    animation: rise 0.6s ease-out 0.1s both;
+  }
+  .reveal-3 {
+    animation: rise 0.6s ease-out 0.2s both;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Révélation au défilement, pilotée par IntersectionObserver */
+.reveal-item {
+  opacity: 0;
+  transform: translateY(20px);
+  transition:
+    opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.reveal-item.est-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-item {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* Cartes : léger soulèvement au survol */
+.carte {
+  transition:
+    transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.3s ease,
+    border-color 0.3s ease;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .carte:hover {
+    transform: translateY(-4px);
+    border-color: color-mix(in srgb, var(--color-signal) 35%, var(--color-trait));
+    box-shadow: 0 10px 30px -12px rgba(18, 35, 58, 0.18);
+  }
+}
+
+/* Soulignement animé sous les titres de section */
+.filet-signal {
+  display: block;
+  height: 2px;
+  width: 40px;
+  background: var(--color-signal);
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.15s;
+}
+
+.est-visible .filet-signal,
+.reveal-item.est-visible .filet-signal {
+  transform: scaleX(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .filet-signal {
+    transform: scaleX(1);
+    transition: none;
+  }
+}
+
+/* Bande des projets : elle défile seule, et se saisit au doigt.
+   Le défilement doit rester instantané ici, sinon le lissage global appliqué
+   à la page transformerait chaque avance d'un pixel en animation. */
+.bande-logos {
+  scroll-behavior: auto;
+  /* Le geste ne doit pas déclencher la navigation arrière du navigateur. */
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+}
+
+.bande-logos::-webkit-scrollbar {
+  display: none;
+}
+
+.bande-logos img {
+  height: var(--hauteur);
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* Sur un téléphone, à taille de bureau, la fenêtre ne montrerait qu'un logo et
+   demi : la bande donnerait l'impression de déborder de l'écran. Les logos et
+   les espaces sont donc réduits, ce qui en laisse voir trois à la fois. */
+@media (max-width: 640px) {
+  .bande-logos img {
+    height: calc(var(--hauteur) * 0.68);
+  }
+
+  .bande-logos .piste > * {
+    margin-left: 0.875rem;
+    margin-right: 0.875rem;
+  }
+}
