@@ -58,10 +58,12 @@ export default function PainTicker() {
             <p className="font-mono text-sm uppercase tracking-widest text-acier">
               Chaque semaine
             </p>
-            {/* 360 px est la largeur minimale qui tient sur deux lignes
-                à cette taille de police. */}
+            {/* 360 px tient la phrase sur trois lignes à cette taille de
+                police. La hauteur du titre est sans effet sur la flèche : c'est
+                le ticker, plus haut, qui fixe la hauteur de la rangée. */}
             <h2 className="mt-4 max-w-sm text-2xl font-bold text-encre sm:text-3xl lg:max-w-[360px]">
-              Le temps ne part pas dans votre métier. Il part là.
+              Ce n&rsquo;est pas le chantier qui vous prend vos journées.
+              C&rsquo;est ça.
             </h2>
           </div>
 
